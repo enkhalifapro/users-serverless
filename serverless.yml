@@ -68,7 +68,7 @@ provider:
     AWS_ACCESS_KEY_ID: xxxxxxx
     AWS_SECRET_ACCESS_KEY: xxx
     AWS_REGION: us-east-1
-# AWS_ACCESS_KEY_ID=AKIAYMKQACLJJ5SGVDGH;AWS_SECRET_ACCESS_KEY=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;AWS_REGION=us-east-1
+
 package:
   exclude:
     - ./**
