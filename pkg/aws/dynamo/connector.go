@@ -35,3 +35,23 @@ func (p *Provider) Put(tableName string, item interface{}) error {
 
 	return req.Send()
 }
+
+// Get item
+func (p *Provider) Get(tableName string, item interface{}) (interface{}, error) {
+	av, err := dynamodbattribute.MarshalMap(item)
+	if err != nil {
+		return nil, err
+	}
+
+	input := dynamodb.GetItemInput{
+		Key:       av,
+		TableName: aws.String(tableName),
+	}
+
+	req, err := p.db.GetItem(&input)
+	if err != nil {
+		return nil, err
+	}
+
+	return req.Item, nil
+}
