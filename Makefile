@@ -5,6 +5,7 @@ build: gomodgen
 	env GOOS=linux go build -ldflags="-s -w" -o bin/hello hello/main.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/world world/main.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/users internal/users/lambda/main.go
+	env GOOS=linux go build -gcflags="all=-N -l" -o bin/users-debug internal/users/lambda/main.go
 
 clean:
 	rm -rf ./bin ./vendor ./api go.sum

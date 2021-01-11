@@ -22,6 +22,7 @@ frameworkVersion: '2'
 
 plugins:
   - serverless-offline
+
 provider:
   name: aws
   runtime: go1.x
@@ -63,9 +64,11 @@ provider:
 #            - "/*"
 
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
+  environment:
+    AWS_ACCESS_KEY_ID: xxxxxxx
+    AWS_SECRET_ACCESS_KEY: xxx
+    AWS_REGION: us-east-1
+# AWS_ACCESS_KEY_ID=AKIAYMKQACLJJ5SGVDGH;AWS_SECRET_ACCESS_KEY=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;AWS_REGION=us-east-1
 package:
   exclude:
     - ./**
