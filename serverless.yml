@@ -26,10 +26,25 @@ provider:
   name: aws
   runtime: go1.x
   lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-1
+
+  apiGateway:
+    shouldStartNameWithService: true
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
 # you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -71,6 +86,12 @@ functions:
       - httpApi:
           path: /world
           method: get
+  users:
+    handler: bin/users
+    events:
+      - http:
+          path: /users
+          method: any
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
