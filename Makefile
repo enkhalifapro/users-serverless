@@ -14,3 +14,8 @@ deploy: clean build
 gomodgen:
 	chmod u+x gomod.sh
 	./gomod.sh
+
+generate: api
+
+api: clean
+	goa gen github.com/enkhalifapro/users-serverless/users/api/design -o ./api/users
