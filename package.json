@@ -1,0 +1,10 @@
+{
+  "name": "users-serverless",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless": "^2.18.0",
+    "serverless-offline": "^6.8.0"
+  }
+}
