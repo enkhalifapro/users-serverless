@@ -99,12 +99,12 @@ func (h *Handler) Add(_ context.Context, usr *usersapi.User) (err error) {
 
 // Get a user by id.
 func (h *Handler) Get(_ context.Context, in *usersapi.GetPayload) (res *usersapi.User, err error) {
-	fmt.Println("xxxxxxxx")
+	fmt.Println("xxxxxxxx22222222333333Kader")
 	fmt.Printf("user isssss %s\n", *in.ID)
-	usr, err := h.provider.Get(*in.ID)
+	/*usr, err := h.provider.Get(*in.ID)
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
-	return &usersapi.User{Username: usr.Username, Password: usr.Password}, nil
+	return &usersapi.User{Username: "usr.Username", Password: "usr.Password"}, nil
 }

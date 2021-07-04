@@ -10,8 +10,11 @@ build: gomodgen
 clean:
 	rm -rf ./bin ./vendor ./api go.sum
 
-deploy: clean build
+deploy: build
 	sls deploy --verbose
+
+deploy-local: build
+	serverless deploy --stage local --verbose
 
 sls-debug:
 	SLS_DEBUG=* sls offline --useDocker

@@ -22,7 +22,18 @@ frameworkVersion: '2'
 
 plugins:
   - serverless-offline
+  - serverless-localstack
 
+custom:
+  localstack:
+    debug: true
+    stages:
+      - local
+    lambda:
+      mountCode: true
+    autoStart: true
+  stages:
+    local:
 provider:
   name: aws
   runtime: go1.x
