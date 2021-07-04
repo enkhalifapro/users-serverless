@@ -13,6 +13,9 @@ clean:
 deploy: clean build
 	sls deploy --verbose
 
+sls-debug:
+	SLS_DEBUG=* sls offline --useDocker
+
 gomodgen:
 	chmod u+x gomod.sh
 	./gomod.sh
