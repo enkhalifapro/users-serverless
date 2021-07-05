@@ -1,27 +1,57 @@
 package dynamo
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
 // Provider contains dynamoDB functionalities implementation
 type Provider struct {
-	db *dynamodb.DynamoDB
+	db *dynamodb.Client
 }
 
 func NewConnector() *Provider {
-	mySession := session.Must(session.NewSession())
-	db := dynamodb.New(mySession)
+	awsRegion := "us-east-1"
+	awsEndpoint := os.Getenv("LOCALSTACK_HOSTNAME")
+	fmt.Println("jjjjjjjjj")
+	fmt.Println(awsEndpoint)
+
+	customResolver := aws.EndpointResolverFunc(func(service, region string) (aws.Endpoint, error) {
+		if awsEndpoint != "" {
+			return aws.Endpoint{
+				URL:           fmt.Sprintf("http://%s:4566", awsEndpoint),
+				SigningRegion: awsRegion,
+			}, nil
+		}
+
+		// returning EndpointNotFoundError will allow the service to fallback to it's default resolution
+		return aws.Endpoint{}, &aws.EndpointNotFoundError{}
+	})
+
+	awsCfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(awsRegion),
+		config.WithEndpointResolver(customResolver),
+	)
+	if err != nil {
+		log.Fatalf("Cannot load the AWS configs: %s", err)
+	}
+
+	db := dynamodb.NewFromConfig(awsCfg)
 
 	return &Provider{db: db}
 }
 
 // Put item
 func (p *Provider) Put(tableName string, item interface{}) error {
-	av, err := dynamodbattribute.MarshalMap(item)
+	av, err := attributevalue.MarshalMap(item)
 	if err != nil {
 		return err
 	}
@@ -31,24 +61,33 @@ func (p *Provider) Put(tableName string, item interface{}) error {
 		TableName: aws.String(tableName),
 	}
 
-	req, _ := p.db.PutItemRequest(&input)
+	res, err := p.db.PutItem(context.Background(), &input)
+	if err != nil {
+		return err
+	}
 
-	return req.Send()
+	fmt.Println("dynamo ressssssssss")
+	fmt.Println(res)
+
+	return nil
 }
 
 // Get item
 func (p *Provider) Get(tableName string, item interface{}) (interface{}, error) {
-	av, err := dynamodbattribute.MarshalMap(item)
+	av, err := attributevalue.MarshalMap(item)
 	if err != nil {
+		fmt.Println("errr11111")
+		fmt.Println(err)
 		return nil, err
 	}
 
+	fmt.Println(av)
 	input := dynamodb.GetItemInput{
 		Key:       av,
 		TableName: aws.String(tableName),
 	}
 
-	req, err := p.db.GetItem(&input)
+	req, err := p.db.GetItem(context.Background(), &input)
 	if err != nil {
 		return nil, err
 	}
