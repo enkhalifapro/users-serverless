@@ -2,9 +2,10 @@ package users
 
 import (
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
 // Provider contains user management functionalities
@@ -33,7 +34,7 @@ func (p *Provider) Add(user *User) error {
 }
 
 func (p *Provider) Get(key string) (*User, error) {
-	res, err := p.db.Get("users", map[string]interface{}{"Username": key, "Password": "ali"})
+	res, err := p.db.Get("users", map[string]interface{}{"Username": key, "Password": "saber1"})
 	if err != nil {
 		fmt.Println("errrrrrxxxx")
 		fmt.Println(err)
@@ -42,7 +43,15 @@ func (p *Provider) Get(key string) (*User, error) {
 
 	fmt.Println("tttttttttt")
 	fmt.Println(res)
-	x := res.(map[string]*dynamodb.AttributeValue)
+	v:=res.(map[string]types.AttributeValue)
+	var x string//:= make(map[string]interface{})
+	 err = attributevalue.Unmarshal(v["Username"],&x)
+	if err != nil{
+		fmt.Println("errrror:")
+		fmt.Println(err)
+		return  nil,err
+	}
+	fmt.Println("zzzzzzzzz")
 	fmt.Println(x)
-	return &User{Username: x["Username"].String(), Password: x["Password"].String()}, nil
+	return &User{Username: x, Password: ""}, nil
 }
